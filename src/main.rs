@@ -23,7 +23,7 @@ impl Board {
     }
 
     fn position_is_valid(&self, position: u8) -> bool {
-        !(position > 9)
+        position > 0 && position < 10
     }
 
     fn can_mark_position(&self, position: u8) -> bool {
