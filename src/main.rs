@@ -15,6 +15,35 @@ impl Board {
         }
     }
 
+    fn show(&self) {
+        let board = format!(
+            "| {} | {} | {} |\n| {} | {} | {} |\n| {} | {} | {} |\n",
+            self.get_position_marker(1),
+            self.get_position_marker(2),
+            self.get_position_marker(3),
+            self.get_position_marker(4),
+            self.get_position_marker(5),
+            self.get_position_marker(6),
+            self.get_position_marker(7),
+            self.get_position_marker(8),
+            self.get_position_marker(9)
+        );
+        println!("{}", board);
+    }
+
+    fn get_position_marker(&self, position: u8) -> &str {
+        match self.get_position_value(position) {
+            Some(value) => {
+                if *value {
+                    "X"
+                } else {
+                    "O"
+                }
+            }
+            _ => " ",
+        }
+    }
+
     fn mark_position(&mut self, position: u8, is_x: bool) {
         if Self::position_is_valid(position) && self.can_mark_position(position) {
             self.table.insert(position, is_x);
@@ -64,10 +93,14 @@ impl Board {
     }
 
     fn position_has_value(&self, position: u8, value: bool) -> bool {
-        match self.table.get(&position) {
+        match self.get_position_value(position) {
             Some(marker) => *marker == value,
             _ => false,
         }
+    }
+
+    fn get_position_value(&self, position: u8) -> Option<&bool> {
+        self.table.get(&position)
     }
 
     fn set_winner(&mut self, winner: bool) {
@@ -95,6 +128,7 @@ fn main() {
         println!("Type the position {}: ", &current_player_name);
         board.mark_position(get_position(), current_player);
         current_player = !current_player;
+        board.show();
 
         if let Some(_) = board.get_winner() {
             println!("The player {} winner", &current_player_name);
