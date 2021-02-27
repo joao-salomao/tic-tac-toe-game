@@ -16,13 +16,13 @@ impl Board {
     }
 
     fn mark_position(&mut self, position: u8, is_x: bool) {
-        if self.position_is_valid(position) && self.can_mark_position(position) {
+        if Self::position_is_valid(position) && self.can_mark_position(position) {
             self.table.insert(position, is_x);
             self.check_winner(is_x);
         }
     }
 
-    fn position_is_valid(&self, position: u8) -> bool {
+    fn position_is_valid(position: u8) -> bool {
         position > 0 && position < 10
     }
 
@@ -123,7 +123,7 @@ fn get_position() -> u8 {
             Err(_) => 0,
         };
 
-        if position > 9 || position < 1 {
+        if !Board::position_is_valid(position) {
             println!("The provided position is invalid. Try again.");
             continue;
         }
