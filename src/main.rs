@@ -117,7 +117,19 @@ fn get_current_player_name<'a>(
 }
 
 fn get_position() -> u8 {
-    get_input().parse::<u8>().expect("Error trying parse input")
+    loop {
+        let position = match get_input().parse::<u8>() {
+            Ok(value) => value,
+            Err(_) => 0,
+        };
+
+        if position > 9 || position < 1 {
+            println!("The provided position is invalid. Try again.");
+            continue;
+        }
+
+        return position;
+    }
 }
 
 fn get_input() -> String {
