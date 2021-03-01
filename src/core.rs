@@ -1,5 +1,26 @@
 use std::collections::HashMap;
 
+#[warn(dead_code)]
+pub struct Game {
+    board: Board,
+    is_finished: bool,
+    players: HashMap<bool, String>,
+}
+
+impl Game {
+    pub fn new(player_one_name: String, player_two_name: String) -> Self {
+        let mut players = HashMap::new();
+        players.insert(true, player_one_name);
+        players.insert(false, player_two_name);
+
+        Self {
+            players,
+            board: Board::new(),
+            is_finished: false,
+        }
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub enum Player {
     One,
