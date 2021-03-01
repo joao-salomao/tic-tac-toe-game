@@ -48,5 +48,5 @@ fn get_input() -> String {
     io::stdin()
         .read_line(&mut input)
         .expect("Error getting user input");
-    input.replace("\r\n", "")
+    input.trim().replace("\r\n", "")
 }
