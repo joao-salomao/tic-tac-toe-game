@@ -6,14 +6,14 @@ pub struct Game {
     is_finished: bool,
     current_player: Player,
     winner: Option<Player>,
-    players: HashMap<bool, String>,
+    players: HashMap<Player, String>,
 }
 
 impl Game {
     pub fn new(player_one_name: String, player_two_name: String) -> Self {
         let mut players = HashMap::new();
-        players.insert(true, player_one_name);
-        players.insert(false, player_two_name);
+        players.insert(Player::One, player_one_name);
+        players.insert(Player::Two, player_two_name);
 
         Self {
             players,
@@ -55,12 +55,11 @@ impl Game {
     }
 
     fn get_player_name(&self, player: Player) -> &String {
-        let key = Player::parse_to_bool(player);
-        self.players.get(&key).unwrap()
+        self.players.get(&player).unwrap()
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Player {
     One,
     Two,
@@ -71,13 +70,6 @@ impl Player {
         match *self == Self::One {
             true => "X",
             _ => "O",
-        }
-    }
-
-    fn parse_to_bool(player: Self) -> bool {
-        match player {
-            Self::One => true,
-            _ => false,
         }
     }
 }
