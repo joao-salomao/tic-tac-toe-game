@@ -127,35 +127,39 @@ impl Board {
     }
 
     fn player_won(&mut self, player: Player) -> bool {
-        let one = self.position_has_value(1, player);
-        let two = self.position_has_value(2, player);
-        let three = self.position_has_value(3, player);
-        let four = self.position_has_value(4, player);
-        let five = self.position_has_value(5, player);
-        let six = self.position_has_value(6, player);
-        let seven = self.position_has_value(7, player);
-        let eight = self.position_has_value(8, player);
-        let nine = self.position_has_value(9, player);
-
-        if one && two && three {
-            return true;
-        } else if four && five && six {
-            return true;
-        } else if seven && eight && nine {
-            return true;
-        } else if one && four && seven {
-            return true;
-        } else if two && five && eight {
-            return true;
-        } else if three && six && nine {
-            return true;
-        } else if one && five && nine {
-            return true;
-        } else if three && five && seven {
-            return true;
+        for positions in vec![
+            vec![1, 2, 3],
+            vec![4, 5, 6],
+            vec![7, 8, 9],
+            vec![1, 4, 7],
+            vec![2, 5, 8],
+            vec![3, 6, 9],
+            vec![1, 5, 9],
+            vec![3, 5, 7],
+        ] {
+            if self.positions_were_marked_by_player(
+                positions[0],
+                positions[1],
+                positions[2],
+                player,
+            ) {
+                return true;
+            }
         }
 
         false
+    }
+
+    fn positions_were_marked_by_player(
+        &self,
+        position_one: u8,
+        position_two: u8,
+        position_three: u8,
+        player: Player,
+    ) -> bool {
+        self.position_has_value(position_one, player)
+            && self.position_has_value(position_two, player)
+            && self.position_has_value(position_three, player)
     }
 
     fn position_has_value(&self, position: u8, player: Player) -> bool {
