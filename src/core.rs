@@ -35,15 +35,34 @@ impl Game {
         }
     }
 
-    pub fn set_position(&mut self, position: u8) {
-        self.board.mark_position(position, self.current_player);
+    pub fn play(&mut self, position: u8) {
+        self.set_position(position);
 
-        if self.board.player_won(self.current_player) {
-            self.winner = Some(self.current_player);
-            self.is_finished = true;
-            return;
+        if self.is_winner(self.current_player) {
+            self.set_is_finished(true);
+            self.set_winner(self.current_player);
+        } else {
+            self.update_current_player();
         }
+    }
 
+    fn set_position(&mut self, position: u8) {
+        self.board.mark_position(position, self.current_player);
+    }
+
+    fn is_winner(&mut self, player: Player) -> bool {
+        self.board.player_won(player)
+    }
+
+    fn set_is_finished(&mut self, value: bool) {
+        self.is_finished = value;
+    }
+
+    fn set_winner(&mut self, player: Player) {
+        self.winner = Some(player);
+    }
+
+    fn update_current_player(&mut self) {
         match self.current_player {
             Player::One => self.current_player = Player::Two,
             _ => self.current_player = Player::One,

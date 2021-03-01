@@ -16,7 +16,7 @@ fn main() {
     while game.get_is_finished() != true {
         println!("Type the position {}: ", game.get_current_player_name());
 
-        game.set_position(get_position());
+        game.play(get_position());
         game.board.show();
 
         if let Some(winner) = game.get_winner_name() {
