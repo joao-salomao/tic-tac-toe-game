@@ -36,6 +36,24 @@ impl Game {
             current_player: Player::One,
         }
     }
+    pub fn get_is_finished(&self) -> bool {
+        self.is_finished
+    }
+
+    pub fn get_winner_name(&self) -> Option<&String> {
+        match self.winner {
+            Some(player) => Some(self.get_player_name(player)),
+            _ => None,
+        }
+    }
+
+    pub fn get_current_player_name(&self) -> &String {
+        self.get_player_name(self.current_player)
+    }
+
+    fn get_player_name(&self, player: Player) -> &String {
+        self.players.get(&player).unwrap()
+    }
 
     pub fn play(&mut self, position: u8) {
         self.set_position(position);
@@ -84,25 +102,6 @@ impl Game {
             Player::One => self.current_player = Player::Two,
             _ => self.current_player = Player::One,
         }
-    }
-
-    pub fn get_is_finished(&self) -> bool {
-        self.is_finished
-    }
-
-    pub fn get_winner_name(&self) -> Option<&String> {
-        match self.winner {
-            Some(player) => Some(self.get_player_name(player)),
-            _ => None,
-        }
-    }
-
-    pub fn get_current_player_name(&self) -> &String {
-        self.get_player_name(self.current_player)
-    }
-
-    fn get_player_name(&self, player: Player) -> &String {
-        self.players.get(&player).unwrap()
     }
 }
 
