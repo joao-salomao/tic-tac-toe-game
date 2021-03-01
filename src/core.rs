@@ -27,8 +27,8 @@ impl Game {
     pub fn set_position(&mut self, position: u8) {
         self.board.mark_position(position, self.current_player);
 
-        if let Some(winner) = self.board.get_winner() {
-            self.winner = Some(winner);
+        if self.board.player_won(self.current_player) {
+            self.winner = Some(self.current_player);
             self.is_finished = true;
             return;
         }
@@ -77,19 +77,13 @@ impl Player {
 #[derive(Debug)]
 pub struct Board {
     table: HashMap<u8, Player>,
-    winner: Option<Player>,
 }
 
 impl Board {
     pub fn new() -> Self {
         Self {
-            winner: None,
             table: HashMap::with_capacity(9),
         }
-    }
-
-    pub fn get_winner(&self) -> Option<Player> {
-        self.winner
     }
 
     pub fn show(&self) {
@@ -115,10 +109,9 @@ impl Board {
         }
     }
 
-    pub fn mark_position(&mut self, position: u8, player: Player) {
+    fn mark_position(&mut self, position: u8, player: Player) {
         if Self::position_is_valid(position) && self.can_mark_position(position) {
             self.table.insert(position, player);
-            self.check_winner(player);
         }
     }
 
@@ -133,7 +126,7 @@ impl Board {
         }
     }
 
-    fn check_winner(&mut self, player: Player) {
+    fn player_won(&mut self, player: Player) -> bool {
         let one = self.position_has_value(1, player);
         let two = self.position_has_value(2, player);
         let three = self.position_has_value(3, player);
@@ -145,22 +138,24 @@ impl Board {
         let nine = self.position_has_value(9, player);
 
         if one && two && three {
-            self.set_winner(player);
+            return true;
         } else if four && five && six {
-            self.set_winner(player);
+            return true;
         } else if seven && eight && nine {
-            self.set_winner(player);
+            return true;
         } else if one && four && seven {
-            self.set_winner(player);
+            return true;
         } else if two && five && eight {
-            self.set_winner(player);
+            return true;
         } else if three && six && nine {
-            self.set_winner(player);
+            return true;
         } else if one && five && nine {
-            self.set_winner(player);
+            return true;
         } else if three && five && seven {
-            self.set_winner(player);
+            return true;
         }
+
+        false
     }
 
     fn position_has_value(&self, position: u8, player: Player) -> bool {
@@ -172,9 +167,5 @@ impl Board {
 
     fn get_position_value(&self, position: u8) -> Option<&Player> {
         self.table.get(&position)
-    }
-
-    fn set_winner(&mut self, winner: Player) {
-        self.winner = Some(winner);
     }
 }
