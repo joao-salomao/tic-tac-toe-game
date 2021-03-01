@@ -1,5 +1,16 @@
 use std::collections::HashMap;
 
+const WINNER_POSITIONS: [(u8, u8, u8); 8] = [
+    (1, 2, 3),
+    (4, 5, 6),
+    (7, 8, 9),
+    (1, 4, 7),
+    (2, 5, 8),
+    (3, 6, 9),
+    (1, 5, 9),
+    (3, 5, 7),
+];
+
 #[derive(Debug)]
 pub struct Game {
     pub board: Board,
@@ -127,22 +138,8 @@ impl Board {
     }
 
     fn player_won(&mut self, player: Player) -> bool {
-        for positions in vec![
-            vec![1, 2, 3],
-            vec![4, 5, 6],
-            vec![7, 8, 9],
-            vec![1, 4, 7],
-            vec![2, 5, 8],
-            vec![3, 6, 9],
-            vec![1, 5, 9],
-            vec![3, 5, 7],
-        ] {
-            if self.positions_were_marked_by_player(
-                positions[0],
-                positions[1],
-                positions[2],
-                player,
-            ) {
+        for positions in WINNER_POSITIONS.iter() {
+            if self.positions_were_marked_by_player(positions.0, positions.1, positions.2, player) {
                 return true;
             }
         }
