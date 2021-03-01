@@ -6,10 +6,10 @@ use std::io;
 
 fn main() {
     println!("Type the player one name: ");
-    let player_one = get_input();
+    let player_one = get_player_name();
 
     println!("Type the player two name: ");
-    let player_two = get_input();
+    let player_two = get_player_name();
 
     let mut game = Game::new(player_one, player_two);
 
@@ -31,18 +31,31 @@ fn main() {
 }
 
 fn get_position() -> u8 {
+    let failed_validation_message = "The provided position is invalid. Try again.";
+    let validator = |input: &String| match input.parse::<u8>() {
+        Ok(value) => Board::position_is_valid(value),
+        _ => false,
+    };
+
+    return get_validated_input(failed_validation_message, validator)
+        .parse::<u8>()
+        .unwrap();
+}
+
+fn get_player_name() -> String {
+    let failed_validation_message = "The provided name is invalid. Try again.";
+    let validator = |input: &String| !input.is_empty();
+    return get_validated_input(failed_validation_message, validator);
+}
+
+fn get_validated_input(failed_validation_message: &str, validator: fn(&String) -> bool) -> String {
     loop {
-        let position = match get_input().parse::<u8>() {
-            Ok(value) => value,
-            Err(_) => 0,
-        };
-
-        if !Board::position_is_valid(position) {
-            println!("The provided position is invalid. Try again.");
-            continue;
+        let input = get_input();
+        if validator(&input) {
+            return input;
+        } else {
+            println!("{}", &failed_validation_message);
         }
-
-        return position;
     }
 }
 
