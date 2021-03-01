@@ -19,8 +19,11 @@ fn main() {
         game.play(get_position());
         game.board.show();
 
-        if let Some(winner) = game.get_winner_name() {
-            println!("Player {} won !", winner);
+        let winner = game.get_winner_name();
+        if winner == None && game.get_is_finished() {
+            println!("Game over");
+        } else if let Some(winner_name) = winner {
+            println!("Player {} won !", winner_name);
         }
     }
 
