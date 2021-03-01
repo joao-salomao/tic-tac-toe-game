@@ -14,6 +14,7 @@ const WINNER_POSITIONS: [(u8, u8, u8); 8] = [
 #[derive(Debug)]
 pub struct Game {
     pub board: Board,
+    plays: u8,
     is_finished: bool,
     current_player: Player,
     winner: Option<Player>,
@@ -28,6 +29,7 @@ impl Game {
 
         Self {
             players,
+            plays: 0,
             winner: None,
             board: Board::new(),
             is_finished: false,
@@ -37,17 +39,28 @@ impl Game {
 
     pub fn play(&mut self, position: u8) {
         self.set_position(position);
+        self.increment_plays();
 
         if self.is_winner(self.current_player) {
             self.set_is_finished(true);
             self.set_winner(self.current_player);
-        } else {
-            self.update_current_player();
+            return;
         }
+
+        if self.get_plays() == 9 {
+            self.set_is_finished(true);
+            return;
+        }
+
+        self.update_current_player();
     }
 
     fn set_position(&mut self, position: u8) {
         self.board.mark_position(position, self.current_player);
+    }
+
+    fn increment_plays(&mut self) {
+        self.plays += 1;
     }
 
     fn is_winner(&mut self, player: Player) -> bool {
@@ -60,6 +73,10 @@ impl Game {
 
     fn set_winner(&mut self, player: Player) {
         self.winner = Some(player);
+    }
+
+    fn get_plays(&self) -> u8 {
+        self.plays
     }
 
     fn update_current_player(&mut self) {
