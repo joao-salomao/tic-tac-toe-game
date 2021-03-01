@@ -1,6 +1,7 @@
 mod core;
 
 use crate::core::Board;
+use crate::core::Player;
 use std::io;
 
 fn main() {
@@ -17,7 +18,7 @@ fn main() {
     while game_is_ended != true {
         let current_player_name = get_current_player_name(current_player, &player_one, &player_two);
         println!("Type the position {}: ", &current_player_name);
-        board.mark_position(get_position(), current_player);
+        board.mark_position(get_position(), Player::from_bool(current_player));
         current_player = !current_player;
         board.show();
 

@@ -1,9 +1,31 @@
 use std::collections::HashMap;
 
+#[derive(Debug, Copy, Clone)]
+pub enum Player {
+    One,
+    Two,
+}
+
+impl Player {
+    pub fn from_bool(value: bool) -> Self {
+        match value {
+            true => Self::One,
+            _ => Self::Two,
+        }
+    }
+
+    fn parse_to_bool(player: Self) -> bool {
+        match player {
+            Self::One => true,
+            _ => false,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct Board {
     table: HashMap<u8, bool>,
-    winner: Option<bool>,
+    winner: Option<Player>,
 }
 
 impl Board {
@@ -14,7 +36,7 @@ impl Board {
         }
     }
 
-    pub fn get_winner(&self) -> Option<bool> {
+    pub fn get_winner(&self) -> Option<Player> {
         self.winner
     }
 
@@ -47,10 +69,10 @@ impl Board {
         }
     }
 
-    pub fn mark_position(&mut self, position: u8, is_x: bool) {
+    pub fn mark_position(&mut self, position: u8, player: Player) {
         if Self::position_is_valid(position) && self.can_mark_position(position) {
-            self.table.insert(position, is_x);
-            self.check_winner(is_x);
+            self.table.insert(position, Player::parse_to_bool(player));
+            self.check_winner(player);
         }
     }
 
@@ -65,33 +87,34 @@ impl Board {
         }
     }
 
-    fn check_winner(&mut self, is_x: bool) {
-        let one = self.position_has_value(1, is_x);
-        let two = self.position_has_value(2, is_x);
-        let three = self.position_has_value(3, is_x);
-        let four = self.position_has_value(4, is_x);
-        let five = self.position_has_value(5, is_x);
-        let six = self.position_has_value(6, is_x);
-        let seven = self.position_has_value(7, is_x);
-        let eight = self.position_has_value(8, is_x);
-        let nine = self.position_has_value(9, is_x);
+    fn check_winner(&mut self, player: Player) {
+        let player_bool_value = Player::parse_to_bool(player);
+        let one = self.position_has_value(1, player_bool_value);
+        let two = self.position_has_value(2, player_bool_value);
+        let three = self.position_has_value(3, player_bool_value);
+        let four = self.position_has_value(4, player_bool_value);
+        let five = self.position_has_value(5, player_bool_value);
+        let six = self.position_has_value(6, player_bool_value);
+        let seven = self.position_has_value(7, player_bool_value);
+        let eight = self.position_has_value(8, player_bool_value);
+        let nine = self.position_has_value(9, player_bool_value);
 
         if one && two && three {
-            self.set_winner(is_x);
+            self.set_winner(player);
         } else if four && five && six {
-            self.set_winner(is_x);
+            self.set_winner(player);
         } else if seven && eight && nine {
-            self.set_winner(is_x);
+            self.set_winner(player);
         } else if one && four && seven {
-            self.set_winner(is_x);
+            self.set_winner(player);
         } else if two && five && eight {
-            self.set_winner(is_x);
+            self.set_winner(player);
         } else if three && six && nine {
-            self.set_winner(is_x);
+            self.set_winner(player);
         } else if one && five && nine {
-            self.set_winner(is_x);
+            self.set_winner(player);
         } else if three && five && seven {
-            self.set_winner(is_x);
+            self.set_winner(player);
         }
     }
 
@@ -106,7 +129,7 @@ impl Board {
         self.table.get(&position)
     }
 
-    fn set_winner(&mut self, winner: bool) {
+    fn set_winner(&mut self, winner: Player) {
         self.winner = Some(winner);
     }
 }
