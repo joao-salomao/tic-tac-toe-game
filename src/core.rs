@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 
-#[warn(dead_code)]
+#[derive(Debug)]
 pub struct Game {
-    board: Board,
+    pub board: Board,
     is_finished: bool,
+    current_player: Player,
+    winner: Option<Player>,
     players: HashMap<bool, String>,
 }
 
@@ -15,9 +17,46 @@ impl Game {
 
         Self {
             players,
+            winner: None,
             board: Board::new(),
             is_finished: false,
+            current_player: Player::One,
         }
+    }
+
+    pub fn set_position(&mut self, position: u8) {
+        self.board.mark_position(position, self.current_player);
+
+        if let Some(winner) = self.board.get_winner() {
+            self.winner = Some(winner);
+            self.is_finished = true;
+            return;
+        }
+
+        match self.current_player {
+            Player::One => self.current_player = Player::Two,
+            _ => self.current_player = Player::One,
+        }
+    }
+
+    pub fn get_is_finished(&self) -> bool {
+        self.is_finished
+    }
+
+    pub fn get_winner_name(&self) -> Option<&String> {
+        match self.winner {
+            Some(player) => Some(self.get_player_name(player)),
+            _ => None,
+        }
+    }
+
+    pub fn get_current_player_name(&self) -> &String {
+        self.get_player_name(self.current_player)
+    }
+
+    fn get_player_name(&self, player: Player) -> &String {
+        let key = Player::parse_to_bool(player);
+        self.players.get(&key).unwrap()
     }
 }
 

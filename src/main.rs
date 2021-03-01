@@ -1,7 +1,7 @@
 mod core;
 
 use crate::core::Board;
-use crate::core::Player;
+use crate::core::Game;
 use std::io;
 
 fn main() {
@@ -11,35 +11,20 @@ fn main() {
     println!("Type the player two name: ");
     let player_two = get_input();
 
-    let mut game_is_ended = false;
-    let mut current_player = true;
-    let mut board = Board::new();
+    let mut game = Game::new(player_one, player_two);
 
-    while game_is_ended != true {
-        let current_player_name = get_current_player_name(current_player, &player_one, &player_two);
-        println!("Type the position {}: ", &current_player_name);
-        board.mark_position(get_position(), Player::from_bool(current_player));
-        current_player = !current_player;
-        board.show();
+    while game.get_is_finished() != true {
+        println!("Type the position {}: ", game.get_current_player_name());
 
-        if let Some(_) = board.get_winner() {
-            println!("The player {} winner", &current_player_name);
-            game_is_ended = true;
+        game.set_position(get_position());
+        game.board.show();
+
+        if let Some(winner) = game.get_winner_name() {
+            println!("Player {} won !", winner);
         }
     }
 
-    dbg!(board);
-}
-
-fn get_current_player_name<'a>(
-    current: bool,
-    player_one: &'a String,
-    player_two: &'a String,
-) -> &'a String {
-    match current {
-        true => &player_one,
-        _ => &player_two,
-    }
+    dbg!(game);
 }
 
 fn get_position() -> u8 {
