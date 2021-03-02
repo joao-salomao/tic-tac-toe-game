@@ -1,4 +1,5 @@
 use super::board::Board;
+use super::board::PositionError;
 use super::player::Player;
 use std::collections::HashMap;
 
@@ -46,26 +47,27 @@ impl Game {
         self.players.get(&player).unwrap()
     }
 
-    pub fn play(&mut self, position: u8) {
-        self.set_position(position);
+    pub fn play(&mut self, position: u8) -> Result<(), PositionError> {
+        if let Err(e) = self.set_position(position) {
+            return Err(e);
+        }
+
         self.increment_plays();
 
         if self.is_winner(self.current_player) {
             self.set_is_finished(true);
             self.set_winner(self.current_player);
-            return;
-        }
-
-        if self.get_plays() == 9 {
+        } else if self.get_plays() == 9 {
             self.set_is_finished(true);
-            return;
+        } else {
+            self.update_current_player();
         }
 
-        self.update_current_player();
+        Ok(())
     }
 
-    fn set_position(&mut self, position: u8) {
-        self.board.mark_position(position, self.current_player);
+    fn set_position(&mut self, position: u8) -> Result<(), PositionError> {
+        self.board.mark_position(position, self.current_player)
     }
 
     fn increment_plays(&mut self) {

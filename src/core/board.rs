@@ -47,20 +47,35 @@ impl Board {
         }
     }
 
-    pub fn mark_position(&mut self, position: u8, player: Player) {
-        if Self::position_is_valid(position) && self.can_mark_position(position) {
-            self.table.insert(position, player);
+    pub fn mark_position(&mut self, position: u8, player: Player) -> Result<(), PositionError> {
+        if let Err(e) = self.validate_position(position) {
+            return Err(e);
         }
+
+        self.table.insert(position, player);
+        Ok(())
     }
 
-    pub fn position_is_valid(position: u8) -> bool {
+    pub fn validate_position(&self, position: u8) -> Result<(), PositionError> {
+        if !self.position_is_allowed_to_be_marked(position) {
+            return Err(PositionError::PositionInvalid);
+        }
+
+        if self.position_has_some_value(position) {
+            return Err(PositionError::PositionAlreadyMarked);
+        }
+
+        Ok(())
+    }
+
+    fn position_is_allowed_to_be_marked(&self, position: u8) -> bool {
         position > 0 && position < 10
     }
 
-    fn can_mark_position(&self, position: u8) -> bool {
+    fn position_has_some_value(&self, position: u8) -> bool {
         match self.table.get(&position) {
-            Some(_) => false,
-            _ => true,
+            Some(_) => true,
+            None => false,
         }
     }
 
@@ -98,6 +113,21 @@ impl Board {
     }
 }
 
+#[derive(Debug)]
+pub enum PositionError {
+    PositionInvalid,
+    PositionAlreadyMarked,
+}
+
+impl PositionError {
+    pub fn message(&self) -> &str {
+        match self {
+            Self::PositionInvalid => "Position must be between 1 and 9",
+            Self::PositionAlreadyMarked => "The position was already marked",
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -106,12 +136,12 @@ mod tests {
     fn should_mark_position() {
         let mut board = Board::new();
 
-        board.mark_position(1, Player::One);
-        board.mark_position(2, Player::One);
-        board.mark_position(3, Player::One);
-        board.mark_position(4, Player::Two);
-        board.mark_position(5, Player::Two);
-        board.mark_position(6, Player::Two);
+        board.mark_position(1, Player::One).unwrap();
+        board.mark_position(2, Player::One).unwrap();
+        board.mark_position(3, Player::One).unwrap();
+        board.mark_position(4, Player::Two).unwrap();
+        board.mark_position(5, Player::Two).unwrap();
+        board.mark_position(6, Player::Two).unwrap();
 
         assert_eq!(*board.get_position_value(1).unwrap(), Player::One);
         assert_eq!(*board.get_position_value(2).unwrap(), Player::One);
@@ -134,9 +164,11 @@ mod tests {
     fn should_win_the_match() {
         for positions in WINNER_POSITIONS.iter() {
             let mut board = Board::new();
-            board.mark_position(positions.0, Player::One);
-            board.mark_position(positions.1, Player::One);
-            board.mark_position(positions.2, Player::One);
+
+            board.mark_position(positions.0, Player::One).unwrap();
+            board.mark_position(positions.1, Player::One).unwrap();
+            board.mark_position(positions.2, Player::One).unwrap();
+
             assert!(board.player_won(Player::One));
             assert_eq!(board.player_won(Player::Two), false);
         }
