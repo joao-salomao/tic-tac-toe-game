@@ -97,3 +97,36 @@ impl Board {
         self.table.get(&position)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn should_mark_position() {
+        let mut board = Board::new();
+
+        board.mark_position(1, Player::One);
+        board.mark_position(2, Player::One);
+        board.mark_position(3, Player::One);
+        board.mark_position(4, Player::Two);
+        board.mark_position(5, Player::Two);
+        board.mark_position(6, Player::Two);
+
+        assert_eq!(*board.get_position_value(1).unwrap(), Player::One);
+        assert_eq!(*board.get_position_value(2).unwrap(), Player::One);
+        assert_eq!(*board.get_position_value(3).unwrap(), Player::One);
+        assert_eq!(*board.get_position_value(4).unwrap(), Player::Two);
+        assert_eq!(*board.get_position_value(5).unwrap(), Player::Two);
+        assert_eq!(*board.get_position_value(6).unwrap(), Player::Two);
+
+        let position_value_to_bool = |v| match board.get_position_value(v) {
+            Some(_) => true,
+            _ => false,
+        };
+
+        assert_eq!(position_value_to_bool(7), false);
+        assert_eq!(position_value_to_bool(8), false);
+        assert_eq!(position_value_to_bool(9), false);
+    }
+}
