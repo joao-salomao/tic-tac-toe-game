@@ -129,4 +129,16 @@ mod tests {
         assert_eq!(position_value_to_bool(8), false);
         assert_eq!(position_value_to_bool(9), false);
     }
+
+    #[test]
+    fn should_win_the_match() {
+        for positions in WINNER_POSITIONS.iter() {
+            let mut board = Board::new();
+            board.mark_position(positions.0, Player::One);
+            board.mark_position(positions.1, Player::One);
+            board.mark_position(positions.2, Player::One);
+            assert!(board.player_won(Player::One));
+            assert_eq!(board.player_won(Player::Two), false);
+        }
+    }
 }
