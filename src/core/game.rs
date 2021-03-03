@@ -107,13 +107,44 @@ mod tests {
         let mut game = Game::new("One".to_string(), "Two".to_string());
 
         assert_eq!(game.get_is_finished(), false);
-
-        game.play(1).unwrap();
-        game.play(2).unwrap();
-        game.play(4).unwrap();
-        game.play(3).unwrap();
-        game.play(7).unwrap();
-
+        win_game(&mut game, Player::One);
         assert!(game.get_is_finished());
+    }
+
+    #[test]
+    fn should_get_winner_name() {
+        let mut game_one = Game::new(String::from("One"), String::from("Two"));
+        win_game(&mut game_one, Player::One);
+        assert_eq!(
+            *game_one.get_winner_name().unwrap(),
+            *game_one.get_player_name(Player::One)
+        );
+
+        let mut game_two = Game::new(String::from("One"), String::from("Two"));
+        win_game(&mut game_two, Player::Two);
+        assert_eq!(
+            *game_two.get_winner_name().unwrap(),
+            *game_two.get_player_name(Player::Two)
+        );
+    }
+
+    fn win_game(game: &mut Game, winner: Player) {
+        match winner {
+            Player::One => {
+                game.play(1).unwrap();
+                game.play(2).unwrap();
+                game.play(4).unwrap();
+                game.play(3).unwrap();
+                game.play(7).unwrap();
+            }
+            Player::Two => {
+                game.play(2).unwrap();
+                game.play(1).unwrap();
+                game.play(3).unwrap();
+                game.play(4).unwrap();
+                game.play(5).unwrap();
+                game.play(7).unwrap();
+            }
+        }
     }
 }
