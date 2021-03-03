@@ -147,4 +147,24 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn should_get_current_player_name() {
+        let mut game = Game::new(String::from("One"), String::from("Two"));
+        assert_eq!(
+            *game.get_current_player_name(),
+            *game.get_player_name(Player::One),
+        );
+        game.play(1).unwrap();
+        assert_eq!(
+            *game.get_current_player_name(),
+            *game.get_player_name(Player::Two),
+        );
+        game.play(2).unwrap();
+        assert_eq!(
+            *game.get_current_player_name(),
+            *game.get_player_name(Player::One),
+        );
+    }
+
 }
