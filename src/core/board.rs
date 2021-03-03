@@ -173,4 +173,18 @@ mod tests {
             assert_eq!(board.player_won(Player::Two), false);
         }
     }
+
+    #[test]
+    fn should_validate_position() {
+        let mut board = Board::new();
+        assert!(board.validate_position(10).is_err());
+        assert!(board.validate_position(0).is_err());
+
+        board.mark_position(1, Player::One).unwrap();
+        assert!(board.validate_position(1).is_err());
+
+        assert!(board.validate_position(2).is_ok());
+        board.mark_position(2, Player::One).unwrap();
+        assert!(board.validate_position(2).is_err());
+    }
 }
