@@ -1,6 +1,7 @@
 mod core;
 
 use crate::core::Board;
+use crate::core::Error;
 use crate::core::Game;
 use std::io;
 

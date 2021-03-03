@@ -1,5 +1,5 @@
 use super::board::Board;
-use super::board::PositionError;
+use super::error::PositionError;
 use super::player::Player;
 use std::collections::HashMap;
 
@@ -48,6 +48,10 @@ impl Game {
     }
 
     pub fn play(&mut self, position: u8) -> Result<(), PositionError> {
+        if self.get_is_finished() {
+            return Err(PositionError::PositionInvalid);
+        }
+
         if let Err(e) = self.set_position(position) {
             return Err(e);
         }

@@ -1,3 +1,4 @@
+use super::error::PositionError;
 use super::player::Player;
 use std::collections::HashMap;
 
@@ -110,21 +111,6 @@ impl Board {
 
     fn get_position_value(&self, position: u8) -> Option<&Player> {
         self.table.get(&position)
-    }
-}
-
-#[derive(Debug)]
-pub enum PositionError {
-    PositionInvalid,
-    PositionAlreadyMarked,
-}
-
-impl PositionError {
-    pub fn message(&self) -> &str {
-        match self {
-            Self::PositionInvalid => "Position must be between 1 and 9",
-            Self::PositionAlreadyMarked => "The position was already marked",
-        }
     }
 }
 
