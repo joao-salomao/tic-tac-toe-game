@@ -53,13 +53,12 @@ fn get_player_name() -> String {
 }
 
 fn get_validated_input(failed_validation_message: &str, validator: fn(&String) -> bool) -> String {
-    loop {
-        let input = get_input();
-        if validator(&input) {
-            return input;
-        } else {
-            println!("{}", &failed_validation_message);
-        }
+    let input = get_input();
+    if validator(&input) {
+        return input;
+    } else {
+        println!("{}", &failed_validation_message);
+        return get_validated_input(&failed_validation_message, validator);
     }
 }
 
