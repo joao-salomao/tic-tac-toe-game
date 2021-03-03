@@ -127,6 +127,21 @@ mod tests {
         );
     }
 
+    #[test]
+    fn should_play() {
+        let mut game = create_game();
+        assert!(game.play(1).is_ok());
+        assert!(game.play(1).is_err());
+        assert!(game.play(2).is_ok());
+        assert!(game.play(2).is_err());
+        assert!(game.play(4).is_ok());
+        assert!(game.play(4).is_err());
+        assert!(game.play(3).is_ok());
+        assert!(game.play(3).is_err());
+        assert!(game.play(7).is_ok());
+        assert!(game.play(7).is_err());
+    }
+
     fn win_game(game: &mut Game, winner: Player) {
         match winner {
             Player::One => {
