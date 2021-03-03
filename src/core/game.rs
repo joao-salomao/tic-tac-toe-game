@@ -49,7 +49,11 @@ impl Game {
 
     pub fn play(&mut self, position: u8) -> Result<(), Error> {
         if self.get_is_finished() {
-            return Err(Error::PositionInvalid);
+            return Err(Error::GameFinished);
+        }
+
+        if self.is_game_over() {
+            return Err(Error::GameOver);
         }
 
         if let Err(e) = self.set_position(position) {
@@ -61,13 +65,17 @@ impl Game {
         if self.is_winner(self.current_player) {
             self.set_is_finished(true);
             self.set_winner(self.current_player);
-        } else if self.get_plays() == 9 {
+        } else if self.is_game_over() {
             self.set_is_finished(true);
         } else {
             self.update_current_player();
         }
 
         Ok(())
+    }
+
+    fn is_game_over(&self) -> bool {
+        self.get_plays() >= 9
     }
 
     fn set_position(&mut self, position: u8) -> Result<(), Error> {
