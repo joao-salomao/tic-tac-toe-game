@@ -146,6 +146,22 @@ mod tests {
         assert!(game.play(7).is_err());
     }
 
+    #[test]
+    fn should_not_play_on_finished_game() {
+        let mut game = create_game();
+        win_game(&mut game, Player::One);
+        assert!(game.play(5).is_err());
+        assert!(game.play(6).is_err());
+        assert!(game.play(8).is_err());
+        assert!(game.play(9).is_err());
+
+        let mut game = create_game();
+        win_game(&mut game, Player::Two);
+        assert!(game.play(6).is_err());
+        assert!(game.play(8).is_err());
+        assert!(game.play(9).is_err());
+    }
+
     fn win_game(game: &mut Game, winner: Player) {
         match winner {
             Player::One => {
