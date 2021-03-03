@@ -97,3 +97,23 @@ impl Game {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn game_should_be_finished() {
+        let mut game = Game::new("One".to_string(), "Two".to_string());
+
+        assert_eq!(game.get_is_finished(), false);
+
+        game.play(1).unwrap();
+        game.play(2).unwrap();
+        game.play(4).unwrap();
+        game.play(3).unwrap();
+        game.play(7).unwrap();
+
+        assert!(game.get_is_finished());
+    }
+}
