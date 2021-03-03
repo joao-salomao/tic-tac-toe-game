@@ -104,8 +104,7 @@ mod tests {
 
     #[test]
     fn game_should_be_finished() {
-        let mut game = Game::new("One".to_string(), "Two".to_string());
-
+        let mut game = create_game();
         assert_eq!(game.get_is_finished(), false);
         win_game(&mut game, Player::One);
         assert!(game.get_is_finished());
@@ -113,14 +112,14 @@ mod tests {
 
     #[test]
     fn should_get_winner_name() {
-        let mut game_one = Game::new(String::from("One"), String::from("Two"));
+        let mut game_one = create_game();
         win_game(&mut game_one, Player::One);
         assert_eq!(
             *game_one.get_winner_name().unwrap(),
             *game_one.get_player_name(Player::One)
         );
 
-        let mut game_two = Game::new(String::from("One"), String::from("Two"));
+        let mut game_two = create_game();
         win_game(&mut game_two, Player::Two);
         assert_eq!(
             *game_two.get_winner_name().unwrap(),
@@ -150,7 +149,7 @@ mod tests {
 
     #[test]
     fn should_get_current_player_name() {
-        let mut game = Game::new(String::from("One"), String::from("Two"));
+        let mut game = create_game();
         assert_eq!(
             *game.get_current_player_name(),
             *game.get_player_name(Player::One),
@@ -167,4 +166,7 @@ mod tests {
         );
     }
 
+    fn create_game() -> Game {
+        Game::new(String::from("One"), String::from("Two"))
+    }
 }
