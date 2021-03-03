@@ -1,5 +1,6 @@
 mod core;
 
+use crate::core::Board;
 use crate::core::Game;
 use std::io;
 
@@ -15,7 +16,7 @@ fn main() {
     while game.get_is_finished() != true {
         println!("Type the position {}: ", game.get_current_player_name());
 
-        game.play(get_position()).unwrap();
+        game.play(get_position(&game.board)).unwrap();
         game.board.show();
 
         let winner = game.get_winner_name();
@@ -29,16 +30,20 @@ fn main() {
     dbg!(game);
 }
 
-fn get_position() -> u8 {
-    let failed_validation_message = "The provided position is invalid. Try again.";
-    let validator = |input: &String| match input.parse::<u8>() {
-        Ok(_value) => true,
-        _ => false,
-    };
-
-    return get_validated_input(failed_validation_message, validator)
-        .parse::<u8>()
-        .unwrap();
+fn get_position(board: &Board) -> u8 {
+    match get_input().parse::<u8>() {
+        Ok(value) => match board.validate_position(value) {
+            Ok(_) => value,
+            Err(e) => {
+                println!("{}", e.message());
+                get_position(&board)
+            }
+        },
+        Err(_) => {
+            println!("The provided position is invalid. Try again.");
+            get_position(&board)
+        }
+    }
 }
 
 fn get_player_name() -> String {
