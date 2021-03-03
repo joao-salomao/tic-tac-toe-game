@@ -1,4 +1,4 @@
-use super::error::PositionError;
+use super::error::Error;
 use super::player::Player;
 use std::collections::HashMap;
 
@@ -48,7 +48,7 @@ impl Board {
         }
     }
 
-    pub fn mark_position(&mut self, position: u8, player: Player) -> Result<(), PositionError> {
+    pub fn mark_position(&mut self, position: u8, player: Player) -> Result<(), Error> {
         if let Err(e) = self.validate_position(position) {
             return Err(e);
         }
@@ -57,13 +57,13 @@ impl Board {
         Ok(())
     }
 
-    pub fn validate_position(&self, position: u8) -> Result<(), PositionError> {
+    pub fn validate_position(&self, position: u8) -> Result<(), Error> {
         if !self.position_is_allowed_to_be_marked(position) {
-            return Err(PositionError::PositionInvalid);
+            return Err(Error::PositionInvalid);
         }
 
         if self.position_has_some_value(position) {
-            return Err(PositionError::PositionAlreadyMarked);
+            return Err(Error::PositionAlreadyMarked);
         }
 
         Ok(())

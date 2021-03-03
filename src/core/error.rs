@@ -1,31 +1,16 @@
-pub trait Error {
-    fn message(&self) -> &str;
-}
-
 #[derive(Debug)]
-pub enum GameStatusError {
-    Finished,
+pub enum Error {
+    PositionInvalid,
+    PositionAlreadyMarked,
+    GameFinished,
     GameOver,
 }
 
-impl Error for GameStatusError {
-    fn message(&self) -> &str {
+impl Error {
+    pub fn message(&self) -> &str {
         match self {
             Self::GameOver => "Game over",
-            Self::Finished => "Game finished",
-        }
-    }
-}
-
-#[derive(Debug)]
-pub enum PositionError {
-    PositionInvalid,
-    PositionAlreadyMarked,
-}
-
-impl Error for PositionError {
-    fn message(&self) -> &str {
-        match self {
+            Self::GameFinished => "Game finished",
             Self::PositionInvalid => "Position must be between 1 and 9",
             Self::PositionAlreadyMarked => "The position was already marked",
         }
