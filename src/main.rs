@@ -16,7 +16,8 @@ fn main() {
     while game.get_is_finished() != true {
         println!("Type the position {}: ", game.get_current_player_name());
 
-        game.play(get_position(&game.board)).unwrap();
+        let position = get_position(&game.board);
+        game.play(position).unwrap();
         game.board.show();
 
         let winner = game.get_winner_name();
@@ -33,15 +34,15 @@ fn main() {
 fn get_position(board: &Board) -> u8 {
     match get_input().parse::<u8>() {
         Ok(value) => match board.validate_position(value) {
-            Ok(_) => value,
+            Ok(_) => return value,
             Err(e) => {
                 println!("{}", e.message());
-                get_position(&board)
+                return get_position(&board);
             }
         },
         Err(_) => {
             println!("The provided position is invalid. Try again.");
-            get_position(&board)
+            return get_position(&board);
         }
     }
 }
@@ -49,7 +50,7 @@ fn get_position(board: &Board) -> u8 {
 fn get_player_name() -> String {
     let failed_validation_message = "The provided name is invalid. Try again.";
     let validator = |input: &String| !input.is_empty();
-    return get_validated_input(failed_validation_message, validator);
+    get_validated_input(failed_validation_message, validator)
 }
 
 fn get_validated_input(failed_validation_message: &str, validator: fn(&String) -> bool) -> String {
