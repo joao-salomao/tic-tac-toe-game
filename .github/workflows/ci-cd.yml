@@ -1,4 +1,4 @@
-name: CI/CD
+name: Release
 on:
   push:
     tags:
@@ -7,24 +7,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # test:
-  #   name: Test
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check out
-  #       uses: actions/checkout@v2
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
 
-  #     - name: Installing Rust
-  #       uses: actions-rs/toolchain@v1
-  #       with:
-  #         profile: minimal
-  #         toolchain: stable
+      - name: Installing Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
 
-  #     - name: Run tests
-  #       run: cargo test --verbose
+      - name: Run tests
+        run: cargo test --verbose
 
   build:
-    #  needs: test
+    needs: test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
