@@ -25,7 +25,7 @@ jobs:
 
   release-windows:
     name: Release Windows
-    if: startsWith(github.ref, 'refs/tags/windows')
+    if: endsWith(github.ref, 'windows')
     needs: test
     runs-on: windows-latest
     steps:
@@ -50,7 +50,7 @@ jobs:
 
   release-linux:
     name: Release Linux
-    if: startsWith(github.ref, 'refs/tags/linux')
+    if: endsWith(github.ref, 'linux')
     needs: test
     runs-on: ubuntu-latest
     steps:
