@@ -64,10 +64,12 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
+      - name: Show artifacts
+        run: ls
+
       - name: Rename artifacts
         run: |
-          ls
-          mv tic-tac-toe tic-tac-toe-linux
+          mv ubuntu-latest tic-tac-toe-linux
         # mv tic-tac-toe.exe tic-tac-toe-windows.exe
 
       - name: Release
