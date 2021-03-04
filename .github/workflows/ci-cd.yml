@@ -1,4 +1,4 @@
-name: CI/CD
+name: Release
 on:
   push:
     tags:
@@ -23,11 +23,12 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
 
-  release-windows:
-    name: Release Windows
-    if: endsWith(github.ref, 'windows')
+  build:
     needs: test
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Check out
         uses: actions/checkout@v2
@@ -41,34 +42,43 @@ jobs:
       - name: Build
         run: cargo build --release --verbose
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: Set binary path
+        uses: haya14busa/action-cond@v1
+        id: condval
         with:
-          files: .\target\release\tic-tac-toe.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          cond: ${{ matrix.os == 'windows-latest' }}
+          if_true: ".\\target\\release\\tic-tac-toe.exe"
+          if_false: "./target/release/tic-tac-toe"
 
-  release-linux:
-    name: Release Linux
-    if: endsWith(github.ref, 'linux')
-    needs: test
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: ${{ steps.condval.outputs.value }}
+          retention-days: 1
+
+  release:
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Check out
-        uses: actions/checkout@v2
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
 
-      - name: Installing Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+      - name: Show artifacts
+        run: ls
 
-      - name: Build
-        run: cargo build --release --verbose
+      - name: Zip binaries
+        shell: bash
+        run: |
+          mv ubuntu-latest/tic-tac-toe ./tic-tac-toe-linux
+          mv windows-latest/tic-tac-toe.exe ./tic-tac-toe-windows.exe
+          gzip tic-tac-toe-linux tic-tac-toe-windows.exe
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./target/release/tic-tac-toe.exe
+          files: |
+            tic-tac-toe-linux.gz
+            tic-tac-toe-windows.exe.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
