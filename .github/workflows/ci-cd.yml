@@ -7,28 +7,28 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out
-        uses: actions/checkout@v2
+  # test:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out
+  #       uses: actions/checkout@v2
 
-      - name: Installing Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+  #     - name: Installing Rust
+  #       uses: actions-rs/toolchain@v1
+  #       with:
+  #         profile: minimal
+  #         toolchain: stable
 
-      - name: Run tests
-        run: cargo test --verbose
+  #     - name: Run tests
+  #       run: cargo test --verbose
 
   build:
-    needs: test
+    #  needs: test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
     steps:
       - name: Check out
         uses: actions/checkout@v2
@@ -66,14 +66,15 @@ jobs:
 
       - name: Rename artifacts
         run: |
+          ls
           mv tic-tac-toe tic-tac-toe-linux
-          mv tic-tac-toe.exe tic-tac-toe-windows.exe
+        # mv tic-tac-toe.exe tic-tac-toe-windows.exe
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             tic-tac-toe-linux
-            tic-tac-toe-windows.exe
+        #    tic-tac-toe-windows.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
