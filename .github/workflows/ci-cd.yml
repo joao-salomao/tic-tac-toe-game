@@ -64,9 +64,6 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
-      - name: Show artifacts
-        run: ls
-
       - name: Zip binaries
         shell: bash
         run: |
