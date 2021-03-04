@@ -70,8 +70,8 @@ jobs:
       - name: Zip binaries
         shell: bash
         run: |
-          mv ubuntu-latest tic-tac-toe-linux
-          mv windows-latest tic-tac-toe-windows.exe
+          mv ubuntu-latest/tic-tac-toe ./tic-tac-toe-linux
+          mv windows-latest/tic-tac-toe.exe ./tic-tac-toe-windows.exe
           gzip tic-tac-toe-linux tic-tac-toe-windows.exe
 
       - name: Release
