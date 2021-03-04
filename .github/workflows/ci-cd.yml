@@ -66,8 +66,8 @@ jobs:
 
       - name: Rename artifacts
         run: |
-          mv ubuntu-latest tic-tac-toe-linux
-          mv windows-latest tic-tac-toe-windows.exe
+          mv tic-tac-toe tic-tac-toe-linux
+          mv tic-tac-toe.exe tic-tac-toe-windows.exe
 
       - name: Release
         uses: softprops/action-gh-release@v1
